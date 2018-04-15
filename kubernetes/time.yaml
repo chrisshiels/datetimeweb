@@ -1,0 +1,47 @@
+---
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: time
+  labels:
+    app: time
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: time
+  template:
+    metadata:
+      labels:
+        app: time
+    spec:
+      containers:
+      - name: time
+        image: cs/time:1.0.0
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        env:
+        - name: PORT
+          value: "7002"
+        ports:
+        - containerPort: 7002
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: time
+spec:
+  selector:
+    app: time
+  ports:
+  - name: time
+    protocol: TCP
+    port: 7002
+    targetPort: 7002
+  type: ClusterIP

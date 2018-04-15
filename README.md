@@ -1,9 +1,9 @@
 # datetimeweb
 
-Sample Docker microservices with testinfra tests.
+Sample Docker microservices with testinfra tests for Kubernetes.
 
 
-## Usage
+## Building and testing
 
     host$ # Configure virtualenv.
     host$ virtualenv virtualenv
@@ -22,3 +22,21 @@ Sample Docker microservices with testinfra tests.
                          pytest -v --image cs/time:1.0.0 )
     (virtualenv) host$ ( cd images/web/test ;
                          pytest -v --image cs/web:1.0.0 )
+
+    (virtualenv) host$ # Deactivate virtualenv.
+    (virtualenv) host$ deactivate
+
+
+## Kubernetes
+
+    host$ kubectl apply -f kubernetes/date.yaml
+    replicaset.apps "date" created
+    service "date" created
+
+    host$ kubectl apply -f kubernetes/time.yaml
+    replicaset.apps "time" created
+    service "time" created
+
+    host$ kubectl apply -f kubernetes/web.yaml
+    replicaset.apps "web" created
+    service "web" created
