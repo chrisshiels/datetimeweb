@@ -7,7 +7,7 @@ def pytest_addoption(parser):
   parser.addoption('--image',
                    action = 'store',
                    default = None,
-                   help = 'Default:  cs/date:latest')
+                   help = 'Default:  datetimeweb/date:latest')
 
 
 @pytest.fixture(scope = 'session')

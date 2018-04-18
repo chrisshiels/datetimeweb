@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: time
-        image: cs/time:1.0.0
+        image: datetimeweb/time:1.0.0
         resources:
           requests:
             cpu: 100m
