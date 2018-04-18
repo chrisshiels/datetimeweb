@@ -6,7 +6,7 @@ import requests   # http://docs.python-requests.org/en/master/
 
 @pytest.fixture(scope = 'session')
 def defaultimage():
-  return 'cs/web:latest'
+  return 'datetimeweb/web:latest'
 
 
 @pytest.fixture(scope = 'session')

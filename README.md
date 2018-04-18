@@ -17,11 +17,11 @@ Sample Docker microservices with testinfra tests for Kubernetes.
 
     (virtualenv) host$ # Run tests.
     (virtualenv) host$ ( cd images/date/test/ ;
-                         pytest -v --image cs/date:1.0.0 )
+                         pytest -v --image datetimeweb/date:1.0.0 )
     (virtualenv) host$ ( cd images/time/test ;
-                         pytest -v --image cs/time:1.0.0 )
+                         pytest -v --image datetimeweb/time:1.0.0 )
     (virtualenv) host$ ( cd images/web/test ;
-                         pytest -v --image cs/web:1.0.0 )
+                         pytest -v --image datetimeweb/web:1.0.0 )
 
     (virtualenv) host$ # Deactivate virtualenv.
     (virtualenv) host$ deactivate
