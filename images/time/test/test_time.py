@@ -30,6 +30,11 @@ def test_executable(host):
   assert f.mode == 0o775
 
 
+def test_process(host):
+  process = host.process.get(pid = 1)
+  assert process.args == '/time -p 7002'
+
+
 def test_request_time(hostcolonport):
   url = 'http://%s/time' % ( hostcolonport )
   request = requests.get(url)
