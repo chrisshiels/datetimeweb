@@ -99,4 +99,4 @@ def test_request_status(hostcolonport):
   assert request.headers['content-type'] == 'text/plain'
   assert request.encoding == 'ISO-8859-1'
   d = json.loads(request.text)
-  assert sorted(d.keys()) == [ 'ok' ]
+  assert d == { 'ok': True }
