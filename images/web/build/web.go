@@ -14,7 +14,7 @@ import (
     "net"
     "net/http"
     "os"
-    "strings"
+    "strconv"
     "time"
 )
 
@@ -22,8 +22,8 @@ import (
 var version string
 const (
     defaultport = 7000
-    defaultdateendpoint = "date.service.consul"
-    defaulttimeendpoint = "time.service.consul"
+    defaultdateendpoint = "date"
+    defaulttimeendpoint = "time"
 )
 
 
@@ -31,23 +31,18 @@ const exitsuccess = 0
 const exitfailure = 1
 
 
-func splithostport(s string) (host string, port string) {
-    var i int
-    if i = strings.LastIndex(s, ":"); i == -1 {
-        return s, ""
+func lookupendpoint(endpoint string) (host string, port string, err error) {
+    host, port, err = net.SplitHostPort(endpoint)
+    if err == nil {
+        return host, port, nil
     }
 
-    return s[0:i], s[i + 1:]
-}
-
-
-func lookupendpoint(endpoint string) (host string, port int, err error) {
     _, addrs, err := net.LookupSRV("", "", endpoint)
-    if err != nil {
-        return "", 0, err
+    if err == nil {
+        return addrs[0].Target, strconv.Itoa(int(addrs[0].Port)), nil
     }
 
-    return addrs[0].Target, int(addrs[0].Port), nil
+    return "", "", err
 }
 
 
@@ -57,7 +52,7 @@ func getendpoint(endpoint string, path string) (bytes []byte, err error) {
         return nil, err
     }
 
-    resp, err := http.Get(fmt.Sprintf("http://%s:%d/%s", host, port, path))
+    resp, err := http.Get(fmt.Sprintf("http://%s:%s/%s", host, port, path))
     if err != nil {
         return nil, err
     }
@@ -199,7 +194,10 @@ func (a *app) do(f func() (string, error)) func(responsewriter http.ResponseWrit
             fmt.Fprint(responsewriter, textbody)
         }
 
-        remotehost, _ := splithostport(request.RemoteAddr)
+        remotehost, _, err := net.SplitHostPort(request.RemoteAddr)
+        if err != nil {
+          remotehost = request.RemoteAddr
+        }
         time := time.Now().Format("02/Jan/2006:15:04:05 -0700")
 
         var referrer string
@@ -244,9 +242,13 @@ func main() {
     }
     flagp := flag.Int("p", defaultport, "Port number")
     flagdateendpoint :=
-        flag.String("dateendpoint", defaultdateendpoint, "Date endpoint")
+        flag.String("dateendpoint",
+                    defaultdateendpoint,
+                    "Date endpoint, e.g. date:port or date")
     flagtimeendpoint :=
-        flag.String("timeendpoint", defaulttimeendpoint, "Time endpoint")
+        flag.String("timeendpoint",
+                    defaulttimeendpoint,
+                    "Time endpoint, e.g. time:port or time")
 
     // Note flag.Parse() will also handle '-h' and '--help' and will exit with
     // exit status 2.

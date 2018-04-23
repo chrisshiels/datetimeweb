@@ -9,9 +9,9 @@ import (
     "encoding/json"
     "flag"
     "fmt"
+    "net"
     "net/http"
     "os"
-    "strings"
     "time"
 )
 
@@ -22,16 +22,6 @@ const defaultport = 7001
 
 const exitsuccess = 0
 const exitfailure = 1
-
-
-func splithostport(s string) (host string, port string) {
-    var i int
-    if i = strings.LastIndex(s, ":"); i == -1 {
-        return s, ""
-    }
-
-    return s[0:i], s[i + 1:]
-}
 
 
 type app struct {
@@ -100,7 +90,10 @@ func (a *app) do(f func() (string, error)) func(responsewriter http.ResponseWrit
             fmt.Fprint(responsewriter, jsonbody)
         }
 
-        remotehost, _ := splithostport(request.RemoteAddr)
+        remotehost, _, err := net.SplitHostPort(request.RemoteAddr)
+        if err != nil {
+          remotehost = request.RemoteAddr
+        }
         time := time.Now().Format("02/Jan/2006:15:04:05 -0700")
 
         var referrer string

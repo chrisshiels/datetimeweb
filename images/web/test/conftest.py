@@ -1,35 +1,46 @@
-import docker     # http://docker-py.readthedocs.io/en/stable/
 import pytest     # http://pytest.readthedocs.io/en/stable/
-import testinfra  # http://testinfra.readthedocs.io/en/stable/
+
+
+def defaultdateimage():
+  return 'datetimeweb/date:latest'
+
+
+def defaulttimeimage():
+  return 'datetimeweb/time:latest'
+
+
+def defaultwebimage():
+  return 'datetimeweb/web:latest'
 
 
 def pytest_addoption(parser):
-  parser.addoption('--image',
+  parser.addoption('--dateimage',
                    action = 'store',
                    default = None,
-                   help = 'Default:  datetimeweb/web:latest')
+                   help = 'Default:  %s' % ( defaultdateimage() ))
+  parser.addoption('--timeimage',
+                   action = 'store',
+                   default = None,
+                   help = 'Default:  %s' % ( defaulttimeimage() ))
+  parser.addoption('--webimage',
+                   action = 'store',
+                   default = None,
+                   help = 'Default:  %s' % ( defaultwebimage() ))
 
 
 @pytest.fixture(scope = 'session')
-def image(request, defaultimage):
-  image = request.config.getoption('--image')
-  return image if image is not None else defaultimage
+def dateimage(request):
+  image = request.config.getoption('--dateimage')
+  return image if image is not None else defaultdateimage()
 
 
 @pytest.fixture(scope = 'session')
-def host(image):
-  dockerclient = docker.from_env()
-  container = dockerclient.containers.run(image,
-                                          publish_all_ports = True,
-                                          detach = True)
-  yield testinfra.get_host("docker://" + container.id)
-  container.remove(force = True)
+def timeimage(request):
+  image = request.config.getoption('--timeimage')
+  return image if image is not None else defaulttimeimage()
 
 
 @pytest.fixture(scope = 'session')
-def hostcolonport(host, port):
-  containerid = host.backend.name
-  apiclient = docker.from_env().api
-  d = apiclient.port(containerid, port)[0]
-  ret = '%s:%s' % ( d['HostIp'], d['HostPort'] )
-  return ret
+def webimage(request):
+  image = request.config.getoption('--webimage')
+  return image if image is not None else defaultwebimage()

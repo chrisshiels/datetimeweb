@@ -1,17 +1,33 @@
 import json
 
+import docker     # http://docker-py.readthedocs.io/en/stable/
 import pytest     # http://pytest.readthedocs.io/en/stable/
 import requests   # http://docs.python-requests.org/en/master/
+import testinfra  # http://testinfra.readthedocs.io/en/stable/
 
 
 @pytest.fixture(scope = 'session')
-def defaultimage():
-  return 'datetimeweb/date:latest'
+def host(dateimage):
+  dockerclient = docker.from_env()
+  container = dockerclient.containers.run(dateimage,
+                                          publish_all_ports = True,
+                                          detach = True)
+  yield testinfra.get_host("docker://" + container.id)
+  container.remove(force = True)
 
 
 @pytest.fixture(scope = 'session')
 def port():
   return '7001'
+
+
+@pytest.fixture(scope = 'session')
+def hostcolonport(host, port):
+  containerid = host.backend.name
+  apiclient = docker.from_env().api
+  d = apiclient.port(containerid, port)[0]
+  ret = '%s:%s' % ( d['HostIp'], d['HostPort'] )
+  return ret
 
 
 def test_systeminfo(host):
@@ -52,4 +68,4 @@ def test_request_status(hostcolonport):
   assert request.headers['content-type'] == 'text/json'
   assert request.encoding == 'ISO-8859-1'
   d = json.loads(request.text)
-  assert sorted(d.keys()) == [ 'ok' ]
+  assert d == { 'ok': True }
