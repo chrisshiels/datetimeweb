@@ -22,8 +22,8 @@ import (
 var version string
 const (
     defaultport = 7000
-    defaultdateendpoint = "date.service.consul"
-    defaulttimeendpoint = "time.service.consul"
+    defaultdateendpoint = "date"
+    defaulttimeendpoint = "time"
 )
 
 
