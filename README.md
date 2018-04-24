@@ -30,16 +30,23 @@ Sample Docker microservices with testinfra tests for Kubernetes.
     (virtualenv) host$ deactivate
 
 
-## Kubernetes
+## Kubrernetes - Imperative
+
+    host$ kubectl run date \
+            --image datetimeweb/date:1.0.0 --replicas 3 --port 7001
+    host$ kubectl run time \
+            --image datetimeweb/time:1.0.0 --replicas 3 --port 7002
+    host$ kubectl run web \
+            --image datetimeweb/web:1.0.0 --replicas 3 --port 7000 \
+            --env DATEENDPOINT=date:7001 \
+            --env TIMEENDPOINT=time:7002
+    host$ kubectl expose deployment date --type=ClusterIP
+    host$ kubectl expose deployment time --type=ClusterIP
+    host$ kubectl expose deployment web --type=NodePort
+
+
+## Kubernetes - Declarative
 
     host$ kubectl apply -f kubernetes/date.yaml
-    replicaset.apps "date" created
-    service "date" created
-
     host$ kubectl apply -f kubernetes/time.yaml
-    replicaset.apps "time" created
-    service "time" created
-
     host$ kubectl apply -f kubernetes/web.yaml
-    replicaset.apps "web" created
-    service "web" created
