@@ -1,6 +1,6 @@
 # datetimeweb
 
-Sample Docker microservices with testinfra tests for Kubernetes.
+Sample Docker microservices with testinfra tests for Kubernetes and OpenShift.
 
 
 ## Building and testing
@@ -50,3 +50,29 @@ Sample Docker microservices with testinfra tests for Kubernetes.
     host$ kubectl apply -f kubernetes/date.yaml
     host$ kubectl apply -f kubernetes/time.yaml
     host$ kubectl apply -f kubernetes/web.yaml
+
+
+## OpenShift - Imperative
+
+    host$ oc login -u developer
+    host$ oc get projects
+    host$ oc new-project datetimeweb \
+            --description datetimeweb \
+            --display-name datetimeweb
+    host$ oc new-app datetimeweb/date:1.0.0
+    host$ oc scale deploymentconfig date --replicas 3
+    host$ oc new-app datetimeweb/time:1.0.0
+    host$ oc scale deploymentconfig time --replicas 3
+    host$ oc new-app datetimeweb/web:1.0.0 \
+            -e DATEENDPOINT=_7001-tcp._tcp.date.datetimeweb.svc.cluster.local \
+            -e TIMEENDPOINT=_7002-tcp._tcp.time.datetimeweb.svc.cluster.local
+    host$ oc scale deploymentconfig web --replicas 3
+    host$ oc expose service web
+
+
+## OpenShift - Declarative
+
+    host$ oc apply -f date.yaml
+    host$ oc apply -f time.yaml
+    host$ oc apply -f web.yaml
+    host$ oc apply -f web-route.yaml
