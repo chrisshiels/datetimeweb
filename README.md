@@ -30,7 +30,7 @@ Sample Docker microservices with testinfra tests for Kubernetes and OpenShift.
     (virtualenv) host$ deactivate
 
 
-## Kubrernetes - Imperative
+## Kubernetes - Imperative
 
     host$ kubectl run date \
             --image datetimeweb/date:1.0.0 --replicas 3 --port 7001
