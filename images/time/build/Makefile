@@ -7,6 +7,7 @@ VERSION = latest
 
 build:	Dockerfile time.go
 	go build -ldflags "-X main.version=$(VERSION)" time.go
+	chmod 755 time
 	docker build -t datetimeweb/time:$(VERSION) .
 
 
