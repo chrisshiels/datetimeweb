@@ -71,7 +71,7 @@ def test_executable(host):
   assert f.is_file
   assert f.user == 'root'
   assert f.group == 'root'
-  assert f.mode == 0o775
+  assert f.mode == 0o755
 
 
 def test_process(host):
