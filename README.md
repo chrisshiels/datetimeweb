@@ -82,7 +82,7 @@ and OpenShift.
 
 ## OpenShift - Declarative
 
-    host$ oc apply -f date.yaml
-    host$ oc apply -f time.yaml
-    host$ oc apply -f web.yaml
-    host$ oc apply -f web-route.yaml
+    host$ oc apply -f openshift/date.yaml
+    host$ oc apply -f openshift/time.yaml
+    host$ oc apply -f openshift/web.yaml
+    host$ oc apply -f openshift/web-route.yaml
