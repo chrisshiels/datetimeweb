@@ -1,6 +1,7 @@
 # datetimeweb
 
-Sample Docker microservices with testinfra tests for Kubernetes and OpenShift.
+Sample Docker microservices with testinfra tests for Docker-compose, Kubernetes
+and OpenShift.
 
 
 ## Building and testing
@@ -27,6 +28,15 @@ Sample Docker microservices with testinfra tests for Kubernetes and OpenShift.
                              --webimage datetimeweb/web:1.0.0 )
 
     (virtualenv) host$ # Deactivate virtualenv.
+    (virtualenv) host$ deactivate
+
+
+## Docker-compose
+
+    host$ . virtualenv/bin/activate
+    (virtualenv) host$ docker-compose -f ./compose/docker-compose.yml up -d
+    (virtualenv) host$ docker-compose -f ./compose/docker-compose.yml ps
+    (virtualenv) host$ docker-compose -f ./compose/docker-compose.yml down
     (virtualenv) host$ deactivate
 
 

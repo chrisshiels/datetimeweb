@@ -1,4 +1,5 @@
 docker
+docker-compose
 pytest
 requests
 testinfra

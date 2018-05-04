@@ -1,0 +1,29 @@
+---
+
+version: '3'
+
+networks:
+  datetimeweb: {}
+
+services:
+  date:
+    image: datetimeweb/date:1.0.0
+    networks:
+      datetimeweb: {}
+    environment:
+      PORT: 7001
+  time:
+    image: datetimeweb/time:1.0.0
+    networks:
+      datetimeweb: {}
+    environment:
+      PORT: 7002
+  web:
+    image: datetimeweb/web:1.0.0
+    ports:
+      - 7000:7000
+    networks:
+      datetimeweb: {}
+    environment:
+      DATEENDPOINT: date:7001
+      TIMEENDPOINT: time:7002
